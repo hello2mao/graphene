@@ -1,4 +1,4 @@
-TESTCASES ?= python3 python3-trusted-args base-python3 hello-world nodejs bash numpy pytorch
+TESTCASES ?= python3 python3-trusted-args base-python3 hello-world nodejs bash numpy pytorch sklearn
 DISTRIBUTIONS ?= ubuntu18.04
 
 GRAPHENE_REPO ?= https://github.com/oscarlab/graphene.git
@@ -62,6 +62,13 @@ gsc-%-pytorch: %-pytorch %-pytorch.manifest
 	echo "Building graphenized image $@..."
 	cd .. && ./gsc build -c test/config-$*.yaml -L --insecure-args $(GSC_BUILD_FLAGS) $(addsuffix $(IMAGE_SUFFIX), $*-pytorch) test/$*-pytorch.manifest
 	cd .. && ./gsc sign-image -c test/config-$*.yaml $(addsuffix $(IMAGE_SUFFIX), $*-pytorch) $(notdir $(KEY_FILE))
+	touch $@
+
+.PRECIOUS: gsc-%-sklearn
+gsc-%-sklearn: %-sklearn %-sklearn.manifest
+	echo "Building graphenized image $@..."
+	cd .. && ./gsc build -c test/config-$*.yaml -L --insecure-args $(GSC_BUILD_FLAGS) $(addsuffix $(IMAGE_SUFFIX), $*-sklearn) test/$*-sklearn.manifest
+	cd .. && ./gsc sign-image -c test/config-$*.yaml $(addsuffix $(IMAGE_SUFFIX), $*-sklearn) $(notdir $(KEY_FILE))
 	touch $@
 
 .PRECIOUS: gsc-%-base-python3
